@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: template-market
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: template-market
+  template:
+    metadata:
+      labels:
+        app: template-market
+    spec:
+      containers:
+      - name: template-market
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: templates
+          mountPath: /usr/share/nginx/html/templates
+      volumes:
+      - name: templates
+        hostPath:
+          path: /templates
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: template-market
+spec:
+  selector:
+    app: template-market
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
